@@ -32,7 +32,6 @@ namespace GomokuAdmin.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhotoUrl { get; set; }
-        public bool BanChat { get; set; }
 
         public virtual ICollection<ChatParticipant> ChatParticipants { get; set; }
         public virtual ICollection<ChatRecord> ChatRecords { get; set; }
