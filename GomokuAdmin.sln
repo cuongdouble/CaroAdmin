@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GomokuAdmin.Web", "GomokuAdmin.Web\GomokuAdmin.Web.csproj", "{199001B8-763B-4506-9FE1-68294135BBC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GomokuAdmin.Data", "GomokuAdmin.Data\GomokuAdmin.Data.csproj", "{01B819EC-0CDC-4E36-BB9B-8DD2DA4C7CA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{199001B8-763B-4506-9FE1-68294135BBC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{199001B8-763B-4506-9FE1-68294135BBC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{199001B8-763B-4506-9FE1-68294135BBC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{199001B8-763B-4506-9FE1-68294135BBC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01B819EC-0CDC-4E36-BB9B-8DD2DA4C7CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01B819EC-0CDC-4E36-BB9B-8DD2DA4C7CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01B819EC-0CDC-4E36-BB9B-8DD2DA4C7CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01B819EC-0CDC-4E36-BB9B-8DD2DA4C7CA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF1E5AFF-03F0-4BC1-B74A-F6BA26812922}
+	EndGlobalSection
+EndGlobal
