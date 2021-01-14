@@ -12,7 +12,6 @@ const AppRoute: React.FC<IProps> =
     ({ component: Component, layout: Layout, statusCode: statusCode, path: Path, ...rest }: IProps) => {
 
         var isLoginPath = Path === "/login";
-
         if (!SessionManager.isAuthenticated && !isLoginPath) {
             return <Redirect to="/login" />;
         }

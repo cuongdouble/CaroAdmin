@@ -100,7 +100,7 @@ class GamePage extends React.Component<Props, IState> {
                 <thead>
                     <tr>
                         <th>Board Size</th>
-                        <th>Game Type</th>
+                        <th>Game Result Type</th>
                         <th>Game Result</th>
                         <th>Duration</th>
                         <th>Time</th>

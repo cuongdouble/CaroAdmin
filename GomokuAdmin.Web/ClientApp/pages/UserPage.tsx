@@ -153,9 +153,9 @@ class UserPage extends React.Component<Props, IState> {
                     <tr>
                         <th>User Name</th>
                         <th>Name</th>
-                        <th>NumberofMatchs</th>
+                        <th>Number of Matches</th>
                         <th>Rank</th>
-                        <th>BanedAt</th>
+                        <th>Banned</th>
                         <th></th>
                     </tr>
                 </thead>

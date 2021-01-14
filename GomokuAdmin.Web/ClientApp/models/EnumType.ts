@@ -8,8 +8,8 @@ export enum gameType {
 }
 
 export enum gameResult {
-    X = "X",
-    Y = "Y",
+    X = "X win",
+    Y = "Y win",
     Draw = "Draw",
     Null = "Null"
 }

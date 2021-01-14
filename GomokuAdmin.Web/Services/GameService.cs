@@ -25,12 +25,13 @@ namespace GomokuAdmin.Web.Services
         public virtual Result<List<Game>> Search(Guid? userId)
         {
             if(userId==null || string.IsNullOrEmpty(userId?.ToString()))
-                return Ok(_dbContext.Games.ToList());
+                return Ok(_dbContext.Games.OrderByDescending(x=>x.StartAt).ToList());
             //var user = _dbContext.Users.Where(x => x.Id.Equals(userId)).FirstOrDefault();
             var game = from tp in _dbContext.TeamParticipants
                        where tp.UserId.Equals(userId)
                        join t in _dbContext.Teams on tp.TeamId equals t.Id
                        join g in _dbContext.Games on t.GameId equals g.Id
+                       orderby g.StartAt descending
                        select g;
             return Ok(game.ToList());
         }
