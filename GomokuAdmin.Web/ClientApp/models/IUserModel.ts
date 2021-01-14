@@ -3,16 +3,22 @@
 export interface IUserModel {
     id: GUID;
     username: string;
-    password: string;
+    password: null | string;
     name: string;
-    rank: number;
     createdAt: Date;
     updatedAt: Date;
+    rank: number;
     numberOfMatches: number;
     numberOfWonMatches: number;
     firstName: string;
     lastName: string;
     photoUrl: string;
+    email: null;
+    resetPasswordToken: null;
+    resetPasswordExpires: null;
+    activateCode: null;
+    activatedAt: null;
+    bannedAt: Date;
     chatParticipants: any[];
     chatRecords: any[];
     friendParticipantUser1s: any[];
