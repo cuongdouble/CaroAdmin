@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Compile Remove="ClientApp\images\**" />
     <Compile Remove="obj\bin\**" />
     <Compile Remove="Properties\PublishProfiles\**" />
     <Compile Remove="publish\**" />
@@ -33,10 +34,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="ClientApp\images\**" />
     <EmbeddedResource Remove="logs\**" />
     <EmbeddedResource Remove="obj\bin\**" />
     <EmbeddedResource Remove="Properties\PublishProfiles\**" />
     <EmbeddedResource Remove="publish\**" />
+    <None Remove="ClientApp\images\**" />
     <None Remove="logs\**" />
     <None Remove="obj\bin\**" />
     <None Remove="Properties\PublishProfiles\**" />
@@ -64,10 +67,6 @@
     <None Update="wwwroot\favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\images\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And (!Exists('wwwroot\dist') OR Exists('wwwroot\dist\production_build')) ">

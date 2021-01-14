@@ -84,8 +84,6 @@ namespace GomokuAdmin.Web.Services
             if (person == null)
                 return Error($"Person with id = {model.Id} not found.");
 
-            TrimStrings(model);
-
             var personExists =
                 PeopleList
                 .Any(x =>

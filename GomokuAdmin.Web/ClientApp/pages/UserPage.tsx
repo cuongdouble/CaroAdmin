@@ -11,7 +11,11 @@ import { Modal, Button, Container, Row, Card } from "react-bootstrap";
 import { wait } from "domain-wait";
 import Result from "@Core/Result";
 import { IUserModel } from "@Models/IUserModel";
-import { FastField } from "formik";
+import { FastField, Field } from "formik";
+import { LinkContainer } from 'react-router-bootstrap'
+import { Redirect, NavLink, Link } from "react-router-dom";
+import { Nav, Navbar, Dropdown } from "react-bootstrap";
+import { GUID } from "../models/GuidType";
 
 type Props = typeof userStore.actionCreators & userStore.IUserStoreState & RouteComponentProps<{}>;
 
@@ -20,6 +24,7 @@ interface IState {
     currentPageNum: number;
     limitPerPage: number;
     isDetailModalOpen: boolean;
+    isBanModalOpen: boolean;
     modelForDetail?: IUserModel;
 }
 
@@ -35,9 +40,10 @@ class UserPage extends React.Component<Props, IState> {
         this.state = {
             searchTerm: "",
             currentPageNum: 1,
-            limitPerPage: 10,
+            limitPerPage: 5,
             isDetailModalOpen: false,
-            modelForDetail: {} as IUserModel,
+            isBanModalOpen: false,
+            modelForDetail: null,
         };
 
         // "AwesomeDebouncePromise" makes a delay between
@@ -45,13 +51,20 @@ class UserPage extends React.Component<Props, IState> {
         this.debouncedSearch = AwesomeDebouncePromise((term: string) => {
             props.search(term);
         }, 500);
-
-        wait(async ()  => {
+        wait(async () => {
             // Lets tell Node.js to wait for the request completion.
             // It's necessary when you want to see the fethched data 
             // in your prerendered HTML code (by SSR).
             await this.props.search();
         }, "userPageTask");
+    }
+
+
+    private toggleBanUserModal = (modelForDetail?: IUserModel) => {
+        this.setState(prev => ({
+            modelForDetail,
+            isBanModalOpen: !prev.isBanModalOpen
+        }));
     }
 
     private onDetailUserModal = (modelForDetail?: IUserModel) => {
@@ -63,9 +76,26 @@ class UserPage extends React.Component<Props, IState> {
 
     private offDetailUserModal = () => {
         this.setState({
-            modelForDetail: {} as IUserModel,
+            modelForDetail: null,
             isDetailModalOpen: false
         });
+    }
+
+    private banUser = async (data: IUserModel) => {
+        var result = await getPromiseFromActionCreator(this.props.ban(data));
+        if (!result.hasErrors) {
+            this.toggleBanUserModal(data);
+        }
+    }
+
+    private getBan(date: Date) {
+        if (date == null)
+            return "No";
+        else return new Date(date.toString()).toLocaleString();
+    }
+
+    private linkMacth(id : GUID) {
+        return '/games?id=' + id ;
     }
 
     private renderRows = (data: IUserModel[]) => {
@@ -76,8 +106,16 @@ class UserPage extends React.Component<Props, IState> {
                     <td>{user.name}</td>
                     <td>{user.numberOfMatches}</td>
                     <td>{user.rank}</td>
+                    <td>{this.getBan(user.bannedAt)}</td>
                     <td>
                         <button className="btn btn-info" onClick={x => this.onDetailUserModal(user)}>Detail</button>&nbsp;
+                        <button className="btn btn-danger" onClick={x => this.toggleBanUserModal(user)}>
+                            {user.bannedAt == null ? "Ban" : "Unban"}
+                        </button>&nbsp;
+                        <button className="btn btn-light" >
+                            <Link to={this.linkMacth(user.id)}>Match History
+                            </Link>
+                        </button>
                     </td>
                 </tr>
             );
@@ -93,7 +131,7 @@ class UserPage extends React.Component<Props, IState> {
 
         return <Container>
             <Helmet>
-                <title>All User</title>
+                <title>All Users</title>
             </Helmet>
 
             <Card body className="mt-4 mb-4">
@@ -117,6 +155,7 @@ class UserPage extends React.Component<Props, IState> {
                         <th>Name</th>
                         <th>NumberofMatchs</th>
                         <th>Rank</th>
+                        <th>BanedAt</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -133,6 +172,10 @@ class UserPage extends React.Component<Props, IState> {
                 </Modal.Header>
                 <Modal.Body>
                     <table className="table">
+                        <tr>
+                            <th>ID</th>
+                            <td>{this.state.modelForDetail?.id}</td>
+                        </tr>
                         <tr>
                             <th>UserName</th>
                             <td>{this.state.modelForDetail?.username}</td>
@@ -177,6 +220,22 @@ class UserPage extends React.Component<Props, IState> {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={x => this.offDetailUserModal()}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Ban modal */}
+            <Modal show={this.state.isBanModalOpen} onHide={() => this.toggleBanUserModal()}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Ban account: {this.state.modelForDetail ? `${this.state.modelForDetail.username}` : null}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Do you really want to Ban/Unban this account?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={x => this.toggleBanUserModal()}>Close</Button>
+                    <Button variant="primary" onClick={x => this.banUser(this.state.modelForDetail)}>
+                        {this.state.modelForDetail?.bannedAt == null ? "Ban" : "Unban"}
+                    </Button>
                 </Modal.Footer>
             </Modal>
 

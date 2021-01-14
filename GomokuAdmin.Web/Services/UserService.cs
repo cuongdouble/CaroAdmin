@@ -36,10 +36,19 @@ namespace GomokuAdmin.Web.Services
             return Ok(_dbContext.Users.ToList());
         }
 
-        //public bool BanChat(Guid userId)
-        //{
-        //    _dbContext.Users.Find(userId).BanChat = true;
-        //    return true;
-        //}
+        public virtual Result<User> Update(User model)
+        {
+            if (model == null)
+                return Error<User>();
+            var user = _dbContext.Users.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (user == null)
+                return Error<User>($"User with id = {model.Id} not found.");
+            if (model.BannedAt == null)
+                user.BannedAt = DateTime.Now;
+            else
+                user.BannedAt = null;
+            _dbContext.SaveChanges();
+            return Ok(user);
+        }
     }
 }

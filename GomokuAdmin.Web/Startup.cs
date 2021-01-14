@@ -44,6 +44,7 @@ namespace GomokuAdmin.Web
             services.AddScoped<AccountService>();
             services.AddScoped<PersonService>();
             services.AddScoped<UserService>();
+            services.AddScoped<GameService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿import { createSlice, PayloadAction, Dispatch } from '@reduxjs/toolkit';
 import UserService from '@Services/UserService';
+import { GUID } from '../models/GuidType';
 import { IUserModel } from '../models/IUserModel';
 
 // Declare an interface of the store's state.
@@ -22,6 +23,12 @@ const slice = createSlice({
         setData: (state, action: PayloadAction<IUserModel[]>) => {
             state.collection = action.payload;
         },
+        updateData: (state, action: PayloadAction<IUserModel>) => {
+            var collection = [...state.collection];
+            var entry = collection.find(x => x.id === action.payload.id);
+            entry.bannedAt = action.payload.bannedAt;
+            state.collection = [...state.collection];
+        },
     }
 });
 
@@ -39,6 +46,21 @@ export const actionCreators = {
 
         if (!result.hasErrors) {
             dispatch(slice.actions.setData(result.value));
+        }
+
+        dispatch(slice.actions.setFetching(false));
+
+        return result;
+    },
+
+    ban: (model: IUserModel) => async (dispatch: Dispatch) => {
+        dispatch(slice.actions.setFetching(true));
+        const service = new UserService();
+
+        const result = await service.update(model);
+
+        if (!result.hasErrors) {
+            dispatch(slice.actions.updateData(result.value));
         }
 
         dispatch(slice.actions.setFetching(false));

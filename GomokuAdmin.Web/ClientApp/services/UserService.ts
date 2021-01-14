@@ -1,7 +1,7 @@
 ﻿import Result from "@Core/Result";
 import { ServiceBase } from "@Core/ServiceBase";
 import SessionManager, { IServiceUser } from "@Core/session";
-import { IUserModel} from "@Models/IUserModel";
+import { IUserModel } from "@Models/IUserModel";
 import { GUID } from "@Models/GuidType";
 
 export default class UserService extends ServiceBase {
@@ -17,14 +17,13 @@ export default class UserService extends ServiceBase {
         return result;
     }
 
-    //public async banChat(userId: GUID): Promise<Result<{}>> {
-    //    var result = await this.requestJson({
-    //        url: `/api/User/${userId}`,
-    //        method: "PATCH",
-    //        data: userId
-    //    });
-    //    return result;
-    //}
-
+    public async update(model: IUserModel): Promise<Result<IUserModel>> {
+        var result = await this.requestJson<IUserModel>({
+            url: `/api/User/${model.id}`,
+            method: "PATCH",
+            data: model
+        });
+        return result;
+    }
 
 }

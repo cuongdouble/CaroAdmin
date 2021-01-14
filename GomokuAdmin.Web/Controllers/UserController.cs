@@ -1,4 +1,5 @@
-﻿using GomokuAdmin.Web.Models;
+﻿using GomokuAdmin.Data;
+using GomokuAdmin.Web.Models;
 using GomokuAdmin.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,14 +23,14 @@ namespace GomokuAdmin.Web.Controllers
             return Json(_userService.Search(term));
         }
 
-        //[HttpPatch("{id:int}")]
-        //public IActionResult BanChat(Guid userId)
-        //{
-        //    if (userId == null)
-        //        return BadRequest($"{nameof(userId)} is null.");
-        //    var result = _userService.BanChat(userId);
-        //    return Json(result);
-        //}
+        [HttpPatch("{id}")]
+        public IActionResult Update(User model)
+        {
+            if (model == null)
+                return BadRequest($"{nameof(model)} is null.");
+            var result = _userService.Update(model);
+            return Json(result);
+        }
 
     }
 }
