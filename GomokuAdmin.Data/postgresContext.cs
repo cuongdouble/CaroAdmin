@@ -1,6 +1,8 @@
 ﻿using System;
+using GomokuAdmin.Data.Constraints;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Npgsql;
 
 #nullable disable
 
@@ -10,13 +12,20 @@ namespace GomokuAdmin.Data
     {
         public postgresContext()
         {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<GameResult>("game_gameresult_enum")
+                   .MapEnum<TeamSide>("team_side_enum")
+                   .MapEnum<GameType>("game_gameendingtype_enum");
         }
 
         public postgresContext(DbContextOptions<postgresContext> options)
             : base(options)
         {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<GameResult>("game_gameresult_enum")
+                   .MapEnum<TeamSide>("team_side_enum")
+                   .MapEnum<GameType>("game_gameendingtype_enum");
         }
 
+        public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<ChatChannel> ChatChannels { get; set; }
         public virtual DbSet<ChatParticipant> ChatParticipants { get; set; }
         public virtual DbSet<ChatRecord> ChatRecords { get; set; }
@@ -34,18 +43,96 @@ namespace GomokuAdmin.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=postgres;Username=postgres;Password=cuong123");
+                optionsBuilder.UseNpgsql("Host=ec2-35-169-184-61.compute-1.amazonaws.com;Database=d2qd61lb9o6l7o;Username=tkedrqcviqvflz;Password=2fab4fdba4eee4dac0b87d04efc90430a4d89f2ef23d331a4d0fe0c657edffbe;sslmode=Require;Trust Server Certificate=true;");
+
             }
+           
         }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasPostgresEnum(null, "game_gameresult_enum", new[] { "0", "1", "2" })
+            _ = modelBuilder.HasPostgresEnum(null, "game_gameendingtype_enum", new[] { "normal", "timeout", "surrender", "quit" })
+                .HasPostgresEnum(null, "game_gameresult_enum", new[] { "0", "1", "2" })
                 .HasPostgresEnum(null, "move_record_value_enum", new[] { "0", "1" })
                 .HasPostgresEnum(null, "team_side_enum", new[] { "0", "1" })
                 .HasPostgresExtension("adminpack")
                 .HasPostgresExtension("uuid-ossp")
-                .HasAnnotation("Relational:Collation", "English_United States.1252");
+                .HasAnnotation("Relational:Collation", "English_United Kingdom.1252");
+           
+
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.ToTable("admin");
+
+                entity.HasIndex(e => e.Username, "UQ_5e568e001f9d1b91f67815c580f")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Email, "UQ_de87485f6489f5d0995f5841952")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasDefaultValueSql("uuid_generate_v4()");
+
+                entity.Property(e => e.BannedAt)
+                    .HasColumnName("banned_at")
+                    .HasDefaultValueSql("now()");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("timestamp with time zone")
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Email)
+                    .HasColumnType("character varying")
+                    .HasColumnName("email");
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("firstName")
+                    .HasDefaultValueSql("''::character varying");
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("lastName")
+                    .HasDefaultValueSql("''::character varying");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Password)
+                    .HasColumnType("character varying")
+                    .HasColumnName("password");
+
+                entity.Property(e => e.PhotoUrl)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("photoURL")
+                    .HasDefaultValueSql("''::character varying");
+
+                entity.Property(e => e.ResetPasswordExpires)
+                    .HasColumnName("resetPasswordExpires")
+                    .HasDefaultValueSql("now()");
+
+                entity.Property(e => e.ResetPasswordToken)
+                    .HasColumnType("character varying")
+                    .HasColumnName("resetPasswordToken");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("timestamp with time zone")
+                    .HasColumnName("updated_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasColumnType("character varying")
+                    .HasColumnName("username");
+            });
 
             modelBuilder.Entity<ChatChannel>(entity =>
             {
@@ -112,6 +199,7 @@ namespace GomokuAdmin.Data
                 entity.HasOne(d => d.Channel)
                     .WithMany(p => p.ChatRecords)
                     .HasForeignKey(d => d.ChannelId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_58a8de1b10b5d5d214cf8eeb0ac");
 
                 entity.HasOne(d => d.User)
@@ -190,9 +278,6 @@ namespace GomokuAdmin.Data
             {
                 entity.ToTable("game");
 
-                entity.HasIndex(e => e.ChatId, "REL_ed6b8c488ab1b1d81c897e8b87")
-                    .IsUnique();
-
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
@@ -210,11 +295,16 @@ namespace GomokuAdmin.Data
                     .HasColumnName("start_at")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.WinningLine)
+                    .HasColumnType("character varying")
+                    .HasColumnName("winningLine");
+
                 entity.HasOne(d => d.Chat)
-                    .WithOne(p => p.Game)
-                    .HasForeignKey<Game>(d => d.ChatId)
+                    .WithMany(p => p.Games)
+                    .HasForeignKey(d => d.ChatId)
                     .HasConstraintName("FK_ed6b8c488ab1b1d81c897e8b877");
-            });
+            })
+                ;
 
             modelBuilder.Entity<MoveRecord>(entity =>
             {
@@ -291,6 +381,7 @@ namespace GomokuAdmin.Data
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Teams)
                     .HasForeignKey(d => d.GameId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_2dad5b2c6156806e8fd59bf37b5");
             });
 
@@ -327,14 +418,33 @@ namespace GomokuAdmin.Data
                 entity.HasIndex(e => e.Username, "UQ_78a916df40e02a9deb1c4b75edb")
                     .IsUnique();
 
+                entity.HasIndex(e => e.Email, "UQ_e12875dfb3b1d92d7d7c5377e22")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
+
+                entity.Property(e => e.ActivateCode)
+                    .HasColumnType("character varying")
+                    .HasColumnName("activateCode");
+
+                entity.Property(e => e.ActivatedAt)
+                    .HasColumnName("activated_at")
+                    .HasDefaultValueSql("now()");
+
+                entity.Property(e => e.BannedAt)
+                    .HasColumnName("banned_at")
+                    .HasDefaultValueSql("now()");
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("timestamp with time zone")
                     .HasColumnName("created_at")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Email)
+                    .HasColumnType("character varying")
+                    .HasColumnName("email");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -370,6 +480,14 @@ namespace GomokuAdmin.Data
                 entity.Property(e => e.Rank)
                     .HasColumnName("rank")
                     .HasDefaultValueSql("1000");
+
+                entity.Property(e => e.ResetPasswordExpires)
+                    .HasColumnName("resetPasswordExpires")
+                    .HasDefaultValueSql("now()");
+
+                entity.Property(e => e.ResetPasswordToken)
+                    .HasColumnType("character varying")
+                    .HasColumnName("resetPasswordToken");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("timestamp with time zone")

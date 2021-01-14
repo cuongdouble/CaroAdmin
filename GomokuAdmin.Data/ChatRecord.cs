@@ -11,7 +11,7 @@ namespace GomokuAdmin.Data
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid? UserId { get; set; }
-        public Guid? ChannelId { get; set; }
+        public Guid ChannelId { get; set; }
 
         public virtual ChatChannel Channel { get; set; }
         public virtual User User { get; set; }

@@ -24,14 +24,20 @@ namespace GomokuAdmin.Data
         public string Username { get; set; }
         public string Password { get; set; }
         public string Name { get; set; }
-        public int Rank { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public int Rank { get; set; }
         public int NumberOfMatches { get; set; }
         public int NumberOfWonMatches { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhotoUrl { get; set; }
+        public string Email { get; set; }
+        public string ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordExpires { get; set; }
+        public string ActivateCode { get; set; }
+        public DateTime? ActivatedAt { get; set; }
+        public DateTime? BannedAt { get; set; }
 
         public virtual ICollection<ChatParticipant> ChatParticipants { get; set; }
         public virtual ICollection<ChatRecord> ChatRecords { get; set; }

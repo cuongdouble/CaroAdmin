@@ -11,13 +11,14 @@ namespace GomokuAdmin.Data
         {
             ChatParticipants = new HashSet<ChatParticipant>();
             ChatRecords = new HashSet<ChatRecord>();
+            Games = new HashSet<Game>();
         }
 
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public virtual Game Game { get; set; }
         public virtual ICollection<ChatParticipant> ChatParticipants { get; set; }
         public virtual ICollection<ChatRecord> ChatRecords { get; set; }
+        public virtual ICollection<Game> Games { get; set; }
     }
 }
