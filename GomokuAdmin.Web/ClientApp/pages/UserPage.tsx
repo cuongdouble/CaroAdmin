@@ -175,10 +175,6 @@ class UserPage extends React.Component<Props, IState> {
                 <Modal.Body>
                     <table className="table">
                         <tr>
-                            <th>ID</th>
-                            <td>{this.state.modelForDetail?.id}</td>
-                        </tr>
-                        <tr>
                             <th>UserName</th>
                             <td>{this.state.modelForDetail?.username}</td>
                         </tr>
