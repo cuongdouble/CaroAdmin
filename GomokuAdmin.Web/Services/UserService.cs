@@ -26,7 +26,8 @@ namespace GomokuAdmin.Web.Services
                     _dbContext.Users
                     .Where(x =>
                         x.Username.ToLower().Contains(term) ||
-                        x.Name.ToLower().Contains(term)
+                        x.Name.ToLower().Contains(term) ||
+                        x.Email.ToLower().Contains(term)
                     )
                     .ToList();
 

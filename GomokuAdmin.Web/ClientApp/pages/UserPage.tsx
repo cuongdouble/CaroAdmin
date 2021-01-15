@@ -104,6 +104,7 @@ class UserPage extends React.Component<Props, IState> {
                 <tr key={user.id}>
                     <td>{user.username}</td>
                     <td>{user.name}</td>
+                    <td>{user.email}</td>
                     <td>{user.numberOfMatches}</td>
                     <td>{user.rank}</td>
                     <td>{this.getBan(user.bannedAt)}</td>
@@ -142,7 +143,7 @@ class UserPage extends React.Component<Props, IState> {
                             className="form-control"
                             defaultValue={""}
                             onChange={this.onChangeSearchInput}
-                            placeholder={"Search for username or name..."}
+                            placeholder={"Search for username or name or email ..."}
                         />
                     </div>
                 </Row>
@@ -153,6 +154,7 @@ class UserPage extends React.Component<Props, IState> {
                     <tr>
                         <th>User Name</th>
                         <th>Name</th>
+                        <th>Email</th>
                         <th>Number of Matches</th>
                         <th>Rank</th>
                         <th>Banned</th>

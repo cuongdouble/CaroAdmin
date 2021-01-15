@@ -13,7 +13,7 @@ export interface IUserModel {
     firstName: string;
     lastName: string;
     photoUrl: string;
-    email: null;
+    email: string;
     resetPasswordToken: null;
     resetPasswordExpires: null;
     activateCode: null;
